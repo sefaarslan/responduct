@@ -8,6 +8,7 @@ import { Menu, X } from "lucide-react";
 const links = [
   { href: "/features", label: "Özellikler" },
   { href: "/pricing", label: "Fiyatlandırma" },
+  { href: "/docs", label: "Dokümantasyon" },
   { href: "/contact", label: "İletişim" },
 ];
 
