@@ -70,7 +70,7 @@ export function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>E-posta</FormLabel>
+                <FormLabel className="text-slate-700">E-posta</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -90,7 +90,7 @@ export function LoginForm() {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center justify-between">
-                  <FormLabel>Şifre</FormLabel>
+                  <FormLabel className="text-slate-700">Şifre</FormLabel>
                   <Link
                     href="/auth/forgot-password"
                     className="text-xs text-muted-foreground hover:text-foreground transition-colors"

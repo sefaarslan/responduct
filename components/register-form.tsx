@@ -91,7 +91,7 @@ export function RegisterForm() {
             name="company_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Şirket adı</FormLabel>
+                <FormLabel className="text-slate-700">Şirket adı</FormLabel>
                 <FormControl>
                   <Input placeholder="Örnek Eğitim A.Ş." {...field} />
                 </FormControl>
@@ -105,7 +105,7 @@ export function RegisterForm() {
             name="full_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Ad soyad</FormLabel>
+                <FormLabel className="text-slate-700">Ad soyad</FormLabel>
                 <FormControl>
                   <Input placeholder="Adınız Soyadınız" {...field} />
                 </FormControl>
@@ -119,7 +119,7 @@ export function RegisterForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>İş e-postası</FormLabel>
+                <FormLabel className="text-slate-700">İş e-postası</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -137,7 +137,7 @@ export function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Şifre</FormLabel>
+                <FormLabel className="text-slate-700">Şifre</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
