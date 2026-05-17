@@ -41,7 +41,7 @@ export default async function SalesDashboardPage() {
         </div>
         <a
           href="/dashboard/sales/feedback"
-          className="inline-flex items-center gap-2 bg-slate-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
+          className="inline-flex items-center gap-2 bg-slate-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors whitespace-nowrap shrink-0"
         >
           <Plus className="h-4 w-4" />
           Yeni Feedback
