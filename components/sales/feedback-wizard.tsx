@@ -319,11 +319,11 @@ export function FeedbackWizard({
       <div className="max-w-xl mx-auto space-y-6">
         {/* Progress */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs text-zinc-500">
-            <span className="font-medium">
+          <div className="flex items-center justify-between text-xs text-zinc-500 gap-2">
+            <span className="font-medium truncate">
               {school!.school_name} · {product!.product_name}
             </span>
-            <span>
+            <span className="shrink-0">
               {qIndex + 1} / {productQs.length}
             </span>
           </div>
