@@ -27,7 +27,7 @@ const ERROR_MESSAGES: Record<SpeechError, string> = {
   "audio-capture":
     "Mikrofona erişilemiyor. Başka bir uygulama mikrofonu kullanıyor olabilir.",
   "service-not-allowed":
-    "Ses tanıma servisi kullanılamıyor. Chrome'da oturum açık olduğundan emin olun.",
+    "Chrome ses tanıma bu cihazda çalışmıyor. Safari kullanın veya yukarıdaki metin kutusuna yazın.",
   unknown: "Beklenmedik bir hata oluştu",
 };
 
@@ -128,7 +128,7 @@ export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
     return (
       <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
         <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-        Sesli giriş yalnızca Chrome tarayıcısında desteklenmektedir.
+        Sesli giriş bu tarayıcıda desteklenmiyor. Safari veya Chrome kullanın.
       </div>
     );
   }
