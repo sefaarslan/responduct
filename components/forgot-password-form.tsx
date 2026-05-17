@@ -1,105 +1,125 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useState } from "react";
+import Link from "next/link";
+
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useState } from "react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-export function ForgotPasswordForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+const schema = z.object({
+  email: z.string().email("Geçerli bir e-posta girin"),
+});
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
+type Schema = z.infer<typeof schema>;
+
+export function ForgotPasswordForm() {
+  const [sent, setSent] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const form = useForm<Schema>({
+    resolver: zodResolver(schema),
+    defaultValues: { email: "" },
+  });
+
+  const onSubmit = async (values: Schema) => {
+    setServerError(null);
     const supabase = createClient();
-    setIsLoading(true);
-    setError(null);
 
-    try {
-      // The url which will be included in the email. This URL needs to be configured in your redirect URLs in the Supabase dashboard at https://supabase.com/dashboard/project/_/auth/url-configuration
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/update-password`,
-      });
-      if (error) throw error;
-      setSuccess(true);
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
+    const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
+      redirectTo: `${window.location.origin}/auth/update-password`,
+    });
+
+    if (error) {
+      setServerError("İstek gönderilemedi. Lütfen tekrar deneyin.");
+      return;
     }
+
+    setSent(true);
   };
 
+  if (sent) {
+    return (
+      <div className="w-full space-y-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight">E-postanızı kontrol edin</h1>
+          <p className="text-sm text-muted-foreground">
+            Şifre sıfırlama bağlantısı gönderildi. Spam klasörünü de kontrol etmeyi unutmayın.
+          </p>
+        </div>
+        <Link
+          href="/auth/login"
+          className="inline-block text-sm font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          ← Giriş sayfasına dön
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      {success ? (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-            <CardDescription>Password reset instructions sent</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              If you registered using your email and password, you will receive
-              a password reset email.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Reset Your Password</CardTitle>
-            <CardDescription>
-              Type in your email and we&apos;ll send you a link to reset your
-              password
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleForgotPassword}>
-              <div className="flex flex-col gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+    <div className="w-full space-y-6">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Şifremi unuttum</h1>
+        <p className="text-sm text-muted-foreground">
+          E-postanızı girin, sıfırlama bağlantısı gönderelim.
+        </p>
+      </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>E-posta</FormLabel>
+                <FormControl>
                   <Input
-                    id="email"
                     type="email"
-                    placeholder="m@example.com"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="siz@sirket.com"
+                    autoComplete="email"
+                    {...field}
                   />
-                </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send reset email"}
-                </Button>
-              </div>
-              <div className="mt-4 text-center text-sm">
-                Already have an account?{" "}
-                <Link
-                  href="/auth/login"
-                  className="underline underline-offset-4"
-                >
-                  Login
-                </Link>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {serverError && (
+            <p className="text-sm font-medium text-destructive">{serverError}</p>
+          )}
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? "Gönderiliyor…" : "Sıfırlama bağlantısı gönder"}
+          </Button>
+        </form>
+      </Form>
+
+      <p className="text-center text-sm text-muted-foreground">
+        <Link
+          href="/auth/login"
+          className="font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          ← Giriş sayfasına dön
+        </Link>
+      </p>
     </div>
   );
 }
