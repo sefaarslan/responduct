@@ -10,7 +10,13 @@ interface SpeechRecorderProps {
 }
 
 type RecordingState = "idle" | "starting" | "recording";
-type SpeechError = "not-allowed" | "network" | "no-speech" | "unknown";
+type SpeechError =
+  | "not-allowed"
+  | "network"
+  | "no-speech"
+  | "audio-capture"
+  | "service-not-allowed"
+  | "unknown";
 
 const ERROR_MESSAGES: Record<SpeechError, string> = {
   "not-allowed":
@@ -18,13 +24,18 @@ const ERROR_MESSAGES: Record<SpeechError, string> = {
   network:
     "Ağ hatası. İnternet bağlantınızı kontrol edip tekrar deneyin.",
   "no-speech": "Ses algılanamadı. Mikrofona biraz daha yakın konuşun.",
-  unknown: "Beklenmedik bir hata oluştu. Tekrar deneyin.",
+  "audio-capture":
+    "Mikrofona erişilemiyor. Başka bir uygulama mikrofonu kullanıyor olabilir.",
+  "service-not-allowed":
+    "Ses tanıma servisi kullanılamıyor. Chrome'da oturum açık olduğundan emin olun.",
+  unknown: "Beklenmedik bir hata oluştu",
 };
 
 export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
   const [recState, setRecState] = useState<RecordingState>("idle");
   const [interim, setInterim] = useState("");
   const [error, setError] = useState<SpeechError | null>(null);
+  const [errorCode, setErrorCode] = useState<string>("");
   const [supported, setSupported] = useState<boolean | null>(null);
   const interimRef = useRef("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,13 +93,20 @@ export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
       setInterim("");
 
       const code: string = event.error ?? "";
+      console.error("[SpeechRecognition] hata kodu:", code, event);
+
       if (code === "not-allowed" || code === "permission-denied") {
         setError("not-allowed");
       } else if (code === "network") {
         setError("network");
       } else if (code === "no-speech") {
         setError("no-speech");
+      } else if (code === "audio-capture") {
+        setError("audio-capture");
+      } else if (code === "service-not-allowed") {
+        setError("service-not-allowed");
       } else {
+        setErrorCode(code || "bilinmiyor");
         setError("unknown");
       }
     };
@@ -150,9 +168,14 @@ export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
       )}
 
       {error && (
-        <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-          {ERROR_MESSAGES[error]}
+        <div className="flex items-start gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+          <span>
+            {ERROR_MESSAGES[error]}
+            {error === "unknown" && errorCode && (
+              <span className="text-red-400"> (kod: {errorCode})</span>
+            )}
+          </span>
         </div>
       )}
     </div>
