@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Mic, MicOff, AlertCircle } from "lucide-react";
+import { Mic, MicOff, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SpeechRecorderProps {
@@ -9,9 +9,22 @@ interface SpeechRecorderProps {
   disabled?: boolean;
 }
 
+type RecordingState = "idle" | "starting" | "recording";
+type SpeechError = "not-allowed" | "network" | "no-speech" | "unknown";
+
+const ERROR_MESSAGES: Record<SpeechError, string> = {
+  "not-allowed":
+    "Mikrofon izni reddedildi. Tarayıcı adres çubuğundaki kilit simgesinden izin verin.",
+  network:
+    "Ağ hatası. İnternet bağlantınızı kontrol edip tekrar deneyin.",
+  "no-speech": "Ses algılanamadı. Mikrofona biraz daha yakın konuşun.",
+  unknown: "Beklenmedik bir hata oluştu. Tekrar deneyin.",
+};
+
 export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
-  const [recording, setRecording] = useState(false);
+  const [recState, setRecState] = useState<RecordingState>("idle");
   const [interim, setInterim] = useState("");
+  const [error, setError] = useState<SpeechError | null>(null);
   const [supported, setSupported] = useState<boolean | null>(null);
   const interimRef = useRef("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,10 +41,19 @@ export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
     const SpeechRec = (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition;
     if (!SpeechRec) return;
 
+    setError(null);
+    setRecState("starting");
+    interimRef.current = "";
+    setInterim("");
+
     const recognition = new SpeechRec();
     recognition.lang = "tr-TR";
     recognition.continuous = false;
     recognition.interimResults = true;
+
+    recognition.onstart = () => {
+      setRecState("recording");
+    };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recognition.onresult = (event: any) => {
@@ -45,7 +67,7 @@ export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
     };
 
     recognition.onend = () => {
-      setRecording(false);
+      setRecState("idle");
       if (interimRef.current) {
         onResult(interimRef.current);
       }
@@ -53,15 +75,31 @@ export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
       setInterim("");
     };
 
-    recognition.onerror = () => {
-      setRecording(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onerror = (event: any) => {
+      setRecState("idle");
       interimRef.current = "";
       setInterim("");
+
+      const code: string = event.error ?? "";
+      if (code === "not-allowed" || code === "permission-denied") {
+        setError("not-allowed");
+      } else if (code === "network") {
+        setError("network");
+      } else if (code === "no-speech") {
+        setError("no-speech");
+      } else {
+        setError("unknown");
+      }
     };
 
-    recognition.start();
-    recognitionRef.current = recognition;
-    setRecording(true);
+    try {
+      recognition.start();
+      recognitionRef.current = recognition;
+    } catch {
+      setRecState("idle");
+      setError("unknown");
+    }
   };
 
   const stop = () => {
@@ -81,13 +119,18 @@ export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
     <div className="space-y-2">
       <Button
         type="button"
-        variant={recording ? "destructive" : "outline"}
+        variant={recState === "recording" ? "destructive" : "outline"}
         size="sm"
-        onClick={recording ? stop : start}
-        disabled={disabled || supported === null}
+        onClick={recState === "recording" ? stop : start}
+        disabled={disabled || supported === null || recState === "starting"}
         className="gap-2"
       >
-        {recording ? (
+        {recState === "starting" ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Başlatılıyor…
+          </>
+        ) : recState === "recording" ? (
           <>
             <MicOff className="h-4 w-4" />
             Kaydı Durdur
@@ -99,10 +142,18 @@ export function SpeechRecorder({ onResult, disabled }: SpeechRecorderProps) {
           </>
         )}
       </Button>
-      {recording && interim && (
+
+      {recState === "recording" && interim && (
         <p className="text-xs text-zinc-400 italic truncate max-w-sm">
           {interim}…
         </p>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+          {ERROR_MESSAGES[error]}
+        </div>
       )}
     </div>
   );
