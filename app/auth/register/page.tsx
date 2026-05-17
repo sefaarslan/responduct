@@ -6,7 +6,7 @@ export default function RegisterPage() {
     <div className="min-h-svh bg-zinc-50 flex flex-col items-center justify-center px-4 py-12">
       {/* Logo mark */}
       <Link href="/" className="flex flex-col items-center gap-3 mb-3">
-        <div className="h-10 w-10 rounded-xl bg-indigo-600 flex items-center justify-center">
+        <div className="h-10 w-10 rounded-xl bg-slate-700 flex items-center justify-center">
           <span className="text-white font-bold text-lg select-none">R</span>
         </div>
         <span className="text-base font-semibold tracking-tight text-zinc-900">
@@ -19,7 +19,7 @@ export default function RegisterPage() {
       </p>
 
       {/* Kart */}
-      <div className="w-full max-w-sm bg-white border border-zinc-200 rounded-xl shadow-sm px-8 py-10 border-t-2 border-t-indigo-600">
+      <div className="w-full max-w-sm bg-white border border-zinc-200 rounded-xl shadow-sm px-8 py-10 border-t-2 border-t-slate-700">
         <RegisterForm />
       </div>
 

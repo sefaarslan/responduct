@@ -16,6 +16,20 @@ const templates: Record<string, { headers: string[]; example: string[][] }> = {
       ["Dijital Öğrenme Seti", "Tablet destekli interaktif içerik"],
     ],
   },
+  users: {
+    headers: ["ad_soyad", "email", "rol", "sifre"],
+    example: [
+      ["Ahmet Yılmaz", "ahmet@firma.com", "sales", "Gizli123!"],
+      ["Fatma Demir", "fatma@firma.com", "admin", "Gizli456!"],
+    ],
+  },
+  "school-assignments": {
+    headers: ["okul_adi", "kullanici_email"],
+    example: [
+      ["Örnek İlköğretim Okulu", "ahmet@firma.com"],
+      ["Deneme Anadolu Lisesi", "fatma@firma.com"],
+    ],
+  },
 };
 
 export async function GET(

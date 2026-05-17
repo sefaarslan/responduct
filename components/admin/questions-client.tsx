@@ -113,7 +113,7 @@ export function QuestionsClient({
                 </span>
                 <p className="flex-1 text-sm text-zinc-900">{q.question_text}</p>
                 {q.is_required && (
-                  <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-50 text-xs shrink-0">
+                  <Badge className="bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-100 text-xs shrink-0">
                     Zorunlu
                   </Badge>
                 )}
@@ -146,7 +146,7 @@ export function QuestionsClient({
               type="checkbox"
               checked={isRequired}
               onChange={(e) => setIsRequired(e.target.checked)}
-              className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-600"
+              className="rounded border-zinc-300 text-slate-700 focus:ring-slate-700"
             />
             Zorunlu soru
           </label>
@@ -176,7 +176,7 @@ export function QuestionsClient({
             <AlertDialogCancel>İptal</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-slate-800 hover:bg-slate-900 text-white"
             >
               Sil
             </AlertDialogAction>

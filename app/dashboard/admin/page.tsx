@@ -38,29 +38,29 @@ export default async function AdminDashboardPage() {
       label: "Aktif Okul",
       value: schoolCount ?? 0,
       icon: Building2,
-      iconColor: "text-blue-600",
-      iconBg: "bg-blue-50",
+      iconColor: "text-slate-700",
+      iconBg: "bg-slate-100",
     },
     {
       label: "Satış Personeli",
       value: userCount ?? 0,
       icon: Users,
-      iconColor: "text-violet-600",
-      iconBg: "bg-violet-50",
+      iconColor: "text-slate-700",
+      iconBg: "bg-slate-100",
     },
     {
       label: "Toplam Feedback",
       value: feedbackCount ?? 0,
       icon: MessageSquare,
-      iconColor: "text-emerald-600",
-      iconBg: "bg-emerald-50",
+      iconColor: "text-slate-700",
+      iconBg: "bg-slate-100",
     },
     {
       label: "Bu Ay",
       value: thisMonthCount ?? 0,
       icon: TrendingUp,
-      iconColor: "text-orange-600",
-      iconBg: "bg-orange-50",
+      iconColor: "text-slate-700",
+      iconBg: "bg-slate-100",
     },
   ];
 
@@ -110,9 +110,9 @@ export default async function AdminDashboardPage() {
             <a
               key={href}
               href={href}
-              className="flex flex-col gap-1 bg-white rounded-xl border border-zinc-200 p-5 hover:border-indigo-200 hover:bg-indigo-50/40 transition-colors group"
+              className="flex flex-col gap-1 bg-white rounded-xl border border-zinc-200 p-5 hover:border-slate-200 hover:bg-slate-100/40 transition-colors group"
             >
-              <p className="text-sm font-medium text-zinc-900 group-hover:text-indigo-700">
+              <p className="text-sm font-medium text-zinc-900 group-hover:text-slate-800">
                 {label}
               </p>
               <p className="text-xs text-zinc-500">{desc}</p>

@@ -1,10 +1,11 @@
 # Responduct — Ürün Gereksinim Dokümanı (PRD)
 
-**Versiyon:** 1.2  
+**Versiyon:** 1.3  
 **Tarih:** 2026-05-17  
 **Durum:** Taslak  
 **Değişiklik:** v1.1 — Tech stack Angular+Express → Next.js 16 olarak güncellendi  
-**Değişiklik:** v1.2 — STT mimarisi: Faster-Whisper → Browser Speech API (MVP fazı, Chrome)
+**Değişiklik:** v1.2 — STT mimarisi: Faster-Whisper → Browser Speech API (MVP fazı, Chrome)  
+**Değişiklik:** v1.3 — Lemon Squeezy abonelik entegrasyonu MVP kapsamından çıkarıldı, Faz 2'ye alındı. MVP'de Landing Page statik Pricing sayfası içerir (ödeme yok).
 
 ---
 
@@ -121,7 +122,7 @@ Responduct, her satış personeline kendi atanmış okul ve ürünleri kapsamın
 - Admin olarak Excel dosyası yükleyerek toplu okul/ürün/satışçı içe aktarımı yapabilmeliyim.
 - Admin olarak feedback raporlarını okul, ürün, personel ve tarih aralığına göre filtreleyebildim.
 
-### Abonelik & Ödeme
+### Abonelik & Ödeme _(Faz 2 — MVP kapsamı dışı)_
 
 - Şirket olarak Pricing sayfasından plan seçip Lemon Squeezy üzerinden ödeme yapabilmeliyim.
 - Aboneliğim başladığında otomatik olarak dashboard'a yönlendirilmeliyim.
@@ -148,9 +149,9 @@ Responduct, her satış personeline kendi atanmış okul ve ürünleri kapsamın
 | Admin: Ürün & soru yönetimi | P0 | |
 | Admin: Satışçı & atama yönetimi | P0 | |
 | Admin: Feedback raporları | P0 | Basit tablo görünümü |
-| Landing Page (Home, Features, Pricing, Contact) | P0 | |
-| Lemon Squeezy abonelik entegrasyonu | P0 | |
+| Landing Page (Home, Features, Pricing, Contact) | P0 | Pricing statik — ödeme formu yok |
 | Excel toplu içe aktarım | P0 | Okul, ürün, satışçı |
+| Lemon Squeezy abonelik entegrasyonu | P1 | Webhook, ödeme, plan yönetimi — Faz 2 |
 | Admin: Grafik bazlı analytics dashboard | P1 | Recharts veya Chart.js |
 | Push notification (ziyaret hatırlatma) | P1 | |
 | Offline mode + sync | P2 | PWA service worker |
@@ -191,8 +192,8 @@ Kullanıcı (Tablet / Telefon / Laptop)
 | Uygulama (Frontend + API) | Vercel | Next.js — tek deploy, CI/CD GitHub entegrasyonu |
 | Veritabanı | Supabase | PostgreSQL + RLS |
 | Auth | Supabase Auth | SSR uyumlu session yönetimi |
-| Ödeme | Lemon Squeezy | Webhook ile Route Handler bildirim |
-| STT | Faster-Whisper | Next.js API Route üzerinden çalışır |
+| STT | Browser Speech API | Chrome/Edge, ücretsiz, backend gerektirmez |
+| Ödeme | Lemon Squeezy | **Faz 2** — MVP'de entegrasyon yok |
 
 ### Tech Stack
 
@@ -204,8 +205,8 @@ Kullanıcı (Tablet / Telefon / Laptop)
 | Veritabanı | Supabase PostgreSQL |
 | Auth | Supabase Auth (`@supabase/ssr`) |
 | Speech-to-Text | Browser Speech API — MVP fazı (Chrome zorunlu, ücretsiz, backend yok) |
-| Ödeme | Lemon Squeezy |
-| Dosya formatı | ExcelJS (import/export, Route Handler içinde) |
+| Dosya formatı | SheetJS (xlsx) — import/export |
+| Ödeme | Lemon Squeezy — **Faz 2** |
 
 ---
 
@@ -421,7 +422,7 @@ POST   /api/import/school-assignments
 GET    /api/import/template/[type] — Excel şablon indir
 ```
 
-### Abonelik & Webhook
+### Abonelik & Webhook _(Faz 2 — MVP kapsamı dışı)_
 
 ```
 GET    /api/subscription/status
@@ -450,7 +451,7 @@ POST   /api/webhooks/lemon-squeezy — İmza doğrulamalı webhook
                                     └─→ [Onayla & Kaydet] → Veritabanına toplu insert
 ```
 
-### Abonelik Akışı
+### Abonelik Akışı _(Faz 2 — MVP kapsamı dışı)_
 
 ```
 [Anonim] Pricing sayfasına gelir
@@ -460,6 +461,8 @@ POST   /api/webhooks/lemon-squeezy — İmza doğrulamalı webhook
                 └─→ Kullanıcı register/login sayfasına yönlendirilir
                     └─→ Admin hesabı oluşturulur → Dashboard'a yönlendirme
 ```
+
+> MVP'de Pricing sayfası yalnızca plan bilgisi gösterir. "İletişime Geç" veya kayıt formu ile satış süreci manuel yönetilir.
 
 ### STT Akışı (MVP — Browser Speech API)
 
@@ -534,7 +537,9 @@ xl:  1280px → Laptop/Desktop (Admin için)
 | Raporlama | Temel | Gelişmiş | Gelişmiş + Özel |
 | Destek | E-posta | Öncelikli | Özel destek |
 
-### Lemon Squeezy Webhook Event'leri
+> **MVP Notu:** Plan limitleri ve tablosu Landing Page'de statik olarak gösterilir. Satış ve ödeme süreci şu an manuel (e-posta / iletişim formu) yönetilir. Otomatik ödeme ve plan yönetimi Faz 2'de Lemon Squeezy ile devreye alınacaktır.
+
+### Lemon Squeezy Webhook Event'leri _(Faz 2)_
 
 | Event | Aksiyon |
 |-------|---------|
@@ -587,7 +592,7 @@ xl:  1280px → Laptop/Desktop (Admin için)
 | Browser Speech API Türkçe doğruluğu yetersiz | Düşük | Orta | Pilot aşamada test et; sorun çıkarsa Faster-Whisper fazına geç |
 | Chrome dışı tarayıcıda kullanım | Orta | Orta | MVP'de Chrome zorunlu olarak belgelenir, kullanıcıya açık uyarı gösterilir |
 | Tablet'te mikrofon erişim izni sorunu | Düşük | Yüksek | İlk kullanımda yönlendirici mesaj göster |
-| Lemon Squeezy webhook gecikmeleri | Düşük | Orta | Webhook retry + idempotency key |
+| Lemon Squeezy webhook gecikmeleri | Düşük | Orta | Faz 2 kapsamında, webhook retry + idempotency key ile ele alınacak |
 | Plan limiti aşımı | Orta | Düşük | Backend'de her feedback öncesi limit kontrolü |
 | Supabase RLS yanlış konfigürasyonu | Düşük | Çok Yüksek | Her tablo için RLS testi, integration test yazılacak |
 

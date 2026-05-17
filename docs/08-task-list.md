@@ -12,7 +12,7 @@ MVP geliştirme sırası. Her aşama bir öncekine bağımlıdır.
 - [x] Migration çalıştırıldı (`09-migration.sql`) — 10 tablo, trigger'lar, RLS
 - [x] `docs/` klasörü ve dokümanlar tamamlandı
 - [x] CLAUDE.md + PRD.md Next.js stack'e güncellendi
-- [ ] `.env.example` güncelle (`LEMON_WEBHOOK_SECRET` ekle)
+- [x] `.env` dosyası doğrudan kullanılıyor — `.env.example` kullanılmıyor (Lemon Squeezy değişkenleri CLAUDE.md'de Faz 2 olarak işaretli)
 
 ---
 
@@ -57,22 +57,28 @@ MVP geliştirme sırası. Her aşama bir öncekine bağımlıdır.
 - [x] `GET /api/import/template/[type]` — Excel şablon indir
 - [x] `POST /api/import/schools` — parse + validate + insert
 - [x] `POST /api/import/products`
-- [ ] `POST /api/import/users`
-- [ ] `POST /api/import/school-assignments`
-- [ ] Admin import sayfası — yükle, önizle, onayla
+- [x] `POST /api/import/users`
+- [x] `POST /api/import/school-assignments`
+- [x] Admin import sayfası — yükle, önizle, onayla
 
 ---
 
-## Aşama 5 — Landing Page & Abonelik
+## Aşama 5 — Landing Page
 
-- [ ] Home sayfası
-- [ ] Features sayfası
-- [ ] Pricing sayfası — plan kartları + Lemon Squeezy butonları
-- [ ] Contact sayfası
+- [x] Home sayfası
+- [x] Features sayfası
+- [x] Pricing sayfası — plan kartları (statik, ödeme yok) + "İletişime Geç" CTA
+- [x] Contact sayfası
+
+---
+
+## Aşama 5.5 — Abonelik & Ödeme _(Faz 2 — MVP sonrası)_
+
 - [ ] Lemon Squeezy ürün/plan oluşturma
 - [ ] `POST /api/webhooks/lemon-squeezy` — subscription_created / updated / cancelled
 - [ ] `GET /api/subscription/status`
 - [ ] Admin: abonelik bilgisi gösterimi
+- [ ] Pricing sayfasına Lemon Squeezy checkout butonları ekle
 
 ---
 

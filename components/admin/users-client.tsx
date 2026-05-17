@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, UserX, Users } from "lucide-react";
+import { Plus, UserX, Users, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { UserForm, type UserFormValues } from "./user-form";
+import { ImportDialog } from "./import-dialog";
 
 interface User {
   id: string;
@@ -42,6 +43,7 @@ interface UsersClientProps {
 export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
   const router = useRouter();
   const [formOpen, setFormOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [deactivateId, setDeactivateId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,10 +88,20 @@ export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
             {activeUsers.length} aktif kullanıcı
           </p>
         </div>
-        <Button onClick={() => setFormOpen(true)} className="gap-2">
-          <Plus className="h-4 w-4" />
-          Yeni Kullanıcı
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setImportOpen(true)}
+            className="gap-2"
+          >
+            <FileSpreadsheet className="h-4 w-4" />
+            Excel ile İçe Aktar
+          </Button>
+          <Button onClick={() => setFormOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Yeni Kullanıcı
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -127,8 +139,8 @@ export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
                   <TableRow key={user.id} className="hover:bg-zinc-50">
                     <TableCell className="font-medium text-zinc-900">
                       <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
-                          <span className="text-xs font-semibold text-indigo-700">
+                        <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                          <span className="text-xs font-semibold text-slate-800">
                             {user.full_name
                               .split(" ")
                               .map((n) => n[0])
@@ -150,7 +162,7 @@ export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
                       <Badge
                         className={
                           user.role === "admin"
-                            ? "bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-50"
+                            ? "bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-100"
                             : "bg-zinc-100 text-zinc-600 border-zinc-200 hover:bg-zinc-100"
                         }
                       >
@@ -195,6 +207,13 @@ export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
         onSubmit={handleCreate}
       />
 
+      <ImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        type="users"
+        onSuccess={refresh}
+      />
+
       <AlertDialog
         open={!!deactivateId}
         onOpenChange={(open) => !open && setDeactivateId(null)}
@@ -211,7 +230,7 @@ export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
             <AlertDialogCancel>İptal</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeactivate}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-slate-800 hover:bg-slate-900 text-white"
             >
               Deaktive Et
             </AlertDialogAction>

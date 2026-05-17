@@ -262,7 +262,7 @@ export function SchoolsClient({ initialSchools }: SchoolsClientProps) {
             <AlertDialogCancel>İptal</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-slate-800 hover:bg-slate-900 text-white"
             >
               Pasife Al
             </AlertDialogAction>

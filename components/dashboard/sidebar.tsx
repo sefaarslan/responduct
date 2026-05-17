@@ -64,7 +64,7 @@ export function Sidebar({ role, fullName }: SidebarProps) {
       {/* Logo */}
       <div className="h-14 flex items-center px-5 border-b border-zinc-200">
         <div className="flex items-center gap-2.5">
-          <div className="h-7 w-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+          <div className="h-7 w-7 rounded-lg bg-slate-700 flex items-center justify-center">
             <span className="text-white font-bold text-sm select-none">R</span>
           </div>
           <span className="font-semibold text-sm tracking-tight text-zinc-900">
@@ -87,7 +87,7 @@ export function Sidebar({ role, fullName }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
                 isActive
-                  ? "bg-indigo-50 text-indigo-700 font-medium"
+                  ? "bg-slate-100 text-slate-800 font-medium"
                   : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
               )}
             >
@@ -101,8 +101,8 @@ export function Sidebar({ role, fullName }: SidebarProps) {
       {/* Kullanıcı & Çıkış */}
       <div className="border-t border-zinc-200 p-3 space-y-1">
         <div className="flex items-center gap-3 px-3 py-2">
-          <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
-            <span className="text-xs font-semibold text-indigo-700">{initials}</span>
+          <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+            <span className="text-xs font-semibold text-slate-800">{initials}</span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-zinc-900 truncate">{fullName}</p>

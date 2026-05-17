@@ -84,8 +84,8 @@ export default async function SalesSchoolsPage() {
               >
                 {/* Okul başlığı */}
                 <div className="flex items-start gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0 mt-0.5">
-                    <MapPin className="h-4 w-4 text-indigo-600" />
+                  <div className="h-9 w-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <MapPin className="h-4 w-4 text-slate-700" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-zinc-900 leading-snug">
@@ -113,7 +113,7 @@ export default async function SalesSchoolsPage() {
                         <Phone className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
                         <a
                           href={`tel:${school.phone}`}
-                          className="hover:text-indigo-600 transition-colors"
+                          className="hover:text-slate-700 transition-colors"
                         >
                           {school.phone}
                         </a>

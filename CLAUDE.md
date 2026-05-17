@@ -26,7 +26,7 @@ Bu dosya, Responduct projesinde Claude Code ile çalışmak için temel referans
 | shadcn/ui | latest | Tek UI component kütüphanesi |
 | react-hook-form + zod | latest | Tüm formlar bu ikilisi ile yazılır |
 | Supabase SSR (`@supabase/ssr`) | latest | Auth + veritabanı |
-| Lemon Squeezy | — | SaaS abonelik & ödeme |
+| Lemon Squeezy | — | SaaS abonelik & ödeme — **Faz 2, MVP kapsamında değil** |
 | Faster-Whisper | — | Sesli giriş → Türkçe metin dönüşümü |
 | Vercel | — | Deploy (tek platform) |
 
@@ -46,8 +46,6 @@ Next.js (Vercel)
        ├── Client Components     → Form, interaksiyon, STT kayıt
        ├── Route Handlers        → API endpoint'leri (app/api/)
        │     ├── /api/auth/register      Service role ile kayıt
-       │     ├── /api/stt/transcribe     Faster-Whisper entegrasyonu
-       │     ├── /api/webhooks/...       Lemon Squeezy webhook
        │     └── /api/...               CRUD endpoint'leri
        └── lib/supabase/proxy.ts → Auth yönlendirme (Next.js 16 Fluid)
               │
@@ -91,9 +89,7 @@ app/
 │   ├── products/route.ts
 │   ├── users/route.ts
 │   ├── feedbacks/route.ts
-│   ├── stt/transcribe/route.ts    (Ses → metin)
-│   ├── import/route.ts            (Excel import)
-│   └── webhooks/lemon-squeezy/route.ts
+│   └── import/                    (Excel import — schools, products, users, school-assignments)
 │
 ├── globals.css
 └── layout.tsx
@@ -230,9 +226,8 @@ POST  /api/import/products
 POST  /api/import/users
 GET   /api/import/template/[type]
 
-GET   /api/subscription/status
-
-POST  /api/webhooks/lemon-squeezy — İmza doğrulamalı webhook
+# GET   /api/subscription/status         — Faz 2
+# POST  /api/webhooks/lemon-squeezy      — Faz 2
 ```
 
 ---
@@ -423,12 +418,14 @@ Browser Speech API'nin yetersiz kaldığı durumlarda (offline, Firefox, yüksek
 
 ---
 
-## Lemon Squeezy Entegrasyonu
+## Lemon Squeezy Entegrasyonu _(Faz 2 — MVP kapsamı dışı)_
+
+> MVP'de Lemon Squeezy entegrasyonu yoktur. Landing Page'deki Pricing sayfası statik plan bilgisi gösterir. Aşağıdaki detaylar Faz 2 referansı için korunmuştur.
 
 ### Webhook Güvenliği
 
 ```typescript
-// app/api/webhooks/lemon-squeezy/route.ts
+// app/api/webhooks/lemon-squeezy/route.ts  (Faz 2)
 const signature = req.headers.get("x-signature");
 const isValid = verifyLemonSqueezySignature(rawBody, signature, process.env.LEMON_WEBHOOK_SECRET!);
 if (!isValid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -492,7 +489,7 @@ function process(data: any) { ... }
 - `NEXT_PUBLIC_` prefix'li key'ler tarayıcıya açıktır — secret olmaz
 - Supabase Client Component sorguları RLS tarafından korunur, ekstra filtre gerekmez
 - Route Handler'larda session kontrolü her endpoint başında yapılır
-- Lemon Squeezy webhook imzası mutlaka doğrulanır
+- Lemon Squeezy webhook imzası Faz 2'de mutlaka doğrulanır (MVP'de entegrasyon yok)
 - Admin client (`createAdminClient`) yalnızca zorunlu durumlarda kullanılır
 
 ---
@@ -521,25 +518,42 @@ Tasarım dili **güven veren, minimal ve profesyonel** olmalıdır.
 
 ### Renk Sistemi
 
+Tüm uygulama **slate** renk skalasını kullanır. indigo, violet, purple, zinc yasaktır.
+
 ```
-Arka plan:        white / zinc-50      (#ffffff / #fafafa)
-Primary text:     zinc-900             (#18181b)
-Secondary text:   zinc-500             (#71717a)
-Border:           zinc-200             (#e4e4e7)
-Primary accent:   indigo-600           (#4f46e5)
-Secondary accent: slate-600            (#475569)
-Başarı:           emerald-500          (#10b981)
-Hata:             red-500              (#ef4444)
+── Landing Pages (tam slate) ────────────────────────────────
+Arka plan (section): white / slate-50     (#ffffff / #f8fafc)
+Primary text:        slate-900            (#0f172a)
+Secondary text:      slate-500            (#64748b)
+Border:              slate-200            (#e2e8f0)
+Primary accent:      slate-700            (#334155)
+Hero / CTA kart / Footer bg: slate-700   (#334155)
+Hover (dark bg):     bg-white/10
+
+── Dashboard ────────────────────────────────────────────────
+Neutral text:        zinc-900 / zinc-500  (dashboard iç metinler)
+Border:              zinc-200             (dashboard kenarlar)
+Sidebar logo:        bg-slate-700         (R harfi kutusu)
+Active nav item:     bg-slate-100 text-slate-800
+Avatar:              bg-slate-100 text-slate-800
+
+── Genel ────────────────────────────────────────────────────
+Başarı:              emerald-50/700       (badge'ler)
+Uyarı:               amber-50/700         (taslak badge)
+Hata:                red-500 / destructive
 ```
 
-CSS değişkenleri `app/globals.css`'te tanımlıdır. `--primary: 243 75% 59%` (indigo-600).
+CSS değişkenleri `app/globals.css`'te tanımlıdır:
+- `--primary: 215 25% 27%` → slate-700 (#334155)
+- `--ring: 215 25% 27%`
+
 Renk değerleri Tailwind class'ı olarak kullanılır; hardcoded hex kullanılmaz.
 
 ### Tipografi
 
 - Font: sistem font stack (sans-serif) — harici font yüklenmez
 - Başlık hiyerarşisi: `text-2xl font-semibold` → `text-lg font-medium` → `text-sm`
-- Body text: `text-sm` veya `text-base`, `text-zinc-700`
+- Body text: `text-sm` veya `text-base`, `text-slate-700` (landing) / `text-zinc-700` (dashboard)
 - Muted metin: `text-muted-foreground`
 - Letter spacing: başlıklarda `tracking-tight`
 
@@ -555,12 +569,12 @@ Renk değerleri Tailwind class'ı olarak kullanılır; hardcoded hex kullanılma
 ### Border & Shadow
 
 ```
-Border:    border border-zinc-200          — ince, hafif
-Radius:    rounded-xl (12px)              — kartlar için
-Shadow:    shadow-sm                       — hafif, amaçlı
-Hover:     hover:bg-zinc-50               — minimal renk değişimi
-Focus:     ring-2 ring-indigo-600/20      — net ama agresif değil
-Accent:    border-t-2 border-t-indigo-600 — auth kartlarında üst vurgu
+Border:    border border-slate-200          — landing; border-zinc-200 dashboard
+Radius:    rounded-xl (12px)               — kartlar için
+Shadow:    shadow-sm                        — hafif, amaçlı
+Hover:     hover:bg-slate-50               — landing; hover:bg-zinc-50 dashboard
+Focus:     ring-2 ring-slate-700/20        — net ama agresif değil
+Accent:    border-t-2 border-t-slate-700   — auth kartlarında üst vurgu
 ```
 
 `shadow-xl`, `shadow-2xl` kullanılmaz.
@@ -599,7 +613,7 @@ Accent:    border-t-2 border-t-indigo-600 — auth kartlarında üst vurgu
 - Her API Route Handler için unit test yazılmalı
 - Feedback akışı için integration testi yazılmalı
 - Webhook handler'lar için test yazılmalı
-- External servisler (Supabase, Lemon Squeezy, Faster-Whisper) mock'lanmalı
+- External servisler (Supabase) mock'lanmalı
 - `npm test` başarıyla geçmeli
 
 ---
@@ -636,12 +650,9 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 # Supabase — yalnızca sunucu tarafı
 SUPABASE_SERVICE_ROLE_KEY=
 
-# Lemon Squeezy
-LEMON_SQUEEZY_API_KEY=
-LEMON_WEBHOOK_SECRET=
-
-# Faster-Whisper (self-hosted ise)
-FASTER_WHISPER_PATH=
+# Lemon Squeezy (Faz 2 — MVP'de kullanılmıyor)
+# LEMON_SQUEEZY_API_KEY=
+# LEMON_WEBHOOK_SECRET=
 ```
 
 ---

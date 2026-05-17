@@ -153,7 +153,7 @@ export function ProductsClient({ initialProducts }: ProductsClientProps) {
                   <TableCell>
                     <Link
                       href={`/dashboard/admin/products/${product.id}/questions`}
-                      className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      className="inline-flex items-center gap-1 text-sm text-slate-700 hover:text-slate-800 font-medium"
                     >
                       {product.questions.length} soru
                       <ChevronRight className="h-3.5 w-3.5" />
@@ -241,7 +241,7 @@ export function ProductsClient({ initialProducts }: ProductsClientProps) {
             <AlertDialogCancel>İptal</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-slate-800 hover:bg-slate-900 text-white"
             >
               Pasife Al
             </AlertDialogAction>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Settings2, Link2 } from "lucide-react";
+import { Settings2, Link2, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { ImportDialog } from "./import-dialog";
 
 interface School {
   id: string;
@@ -58,6 +59,7 @@ export function AssignmentsClient({
 
   const [userDialog, setUserDialog] = useState<School | null>(null);
   const [productDialog, setProductDialog] = useState<School | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
 
   const [pendingUsers, setPendingUsers] = useState<Set<string>>(new Set());
   const [pendingProducts, setPendingProducts] = useState<Set<string>>(new Set());
@@ -174,13 +176,23 @@ export function AssignmentsClient({
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
-          Atamalar
-        </h1>
-        <p className="text-sm text-zinc-500 mt-1">
-          Okullara satışçı ve ürün atayın
-        </p>
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+            Atamalar
+          </h1>
+          <p className="text-sm text-zinc-500 mt-1">
+            Okullara satışçı ve ürün atayın
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => setImportOpen(true)}
+          className="gap-2"
+        >
+          <FileSpreadsheet className="h-4 w-4" />
+          Excel ile İçe Aktar
+        </Button>
       </div>
 
       <Tabs defaultValue="users">
@@ -224,7 +236,7 @@ export function AssignmentsClient({
                             {assignedUsers.map((u) => (
                               <Badge
                                 key={u.id}
-                                className="bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-50 text-xs"
+                                className="bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-100 text-xs"
                               >
                                 {u.full_name}
                               </Badge>
@@ -335,7 +347,7 @@ export function AssignmentsClient({
                       type="checkbox"
                       checked={pendingUsers.has(user.id)}
                       onChange={() => toggleUser(user.id)}
-                      className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-600"
+                      className="rounded border-zinc-300 text-slate-700 focus:ring-slate-700"
                     />
                     <div>
                       <p className="text-sm font-medium text-zinc-900">
@@ -400,7 +412,7 @@ export function AssignmentsClient({
                       setPendingProducts(new Set(products.map((p) => p.id)));
                     }
                   }}
-                  className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                  className="text-xs font-medium text-slate-700 hover:text-slate-800"
                 >
                   {pendingProducts.size === products.length
                     ? "Tümünü Kaldır"
@@ -415,7 +427,7 @@ export function AssignmentsClient({
                         type="checkbox"
                         checked={pendingProducts.has(product.id)}
                         onChange={() => toggleProduct(product.id)}
-                        className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-600"
+                        className="rounded border-zinc-300 text-slate-700 focus:ring-slate-700"
                       />
                       <p className="text-sm font-medium text-zinc-900">
                         {product.product_name}
@@ -445,6 +457,13 @@ export function AssignmentsClient({
           </div>
         </DialogContent>
       </Dialog>
+
+      <ImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        type="school-assignments"
+        onSuccess={() => router.refresh()}
+      />
     </>
   );
 }

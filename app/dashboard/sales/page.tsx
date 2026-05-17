@@ -41,7 +41,7 @@ export default async function SalesDashboardPage() {
         </div>
         <a
           href="/dashboard/sales/feedback"
-          className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="inline-flex items-center gap-2 bg-slate-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
         >
           <Plus className="h-4 w-4" />
           Yeni Feedback
@@ -74,10 +74,10 @@ export default async function SalesDashboardPage() {
             {schools.map((school, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl border border-zinc-200 p-4 flex items-start gap-3 hover:border-indigo-200 transition-colors"
+                className="bg-white rounded-xl border border-zinc-200 p-4 flex items-start gap-3 hover:border-slate-200 transition-colors"
               >
-                <div className="h-8 w-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0 mt-0.5">
-                  <MapPin className="h-4 w-4 text-indigo-600" />
+                <div className="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                  <MapPin className="h-4 w-4 text-slate-700" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-zinc-900">

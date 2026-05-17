@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-type ImportType = "schools" | "products";
+type ImportType = "schools" | "products" | "users" | "school-assignments";
 
 interface ColumnMap {
   label: string;
@@ -38,6 +38,16 @@ const columnMaps: Record<ImportType, ColumnMap[]> = {
   products: [
     { label: "Ürün Adı", key: "product_name" },
     { label: "Açıklama", key: "description" },
+  ],
+  users: [
+    { label: "Ad Soyad", key: "full_name" },
+    { label: "E-posta", key: "email" },
+    { label: "Rol", key: "role" },
+    { label: "Şifre", key: "password" },
+  ],
+  "school-assignments": [
+    { label: "Okul Adı", key: "school_name" },
+    { label: "Kullanıcı E-postası", key: "user_email" },
   ],
 };
 
@@ -59,6 +69,21 @@ const excelKeyMap: Record<ImportType, Record<string, string>> = {
     aciklama: "description",
     "ürün adı": "product_name",
     açıklama: "description",
+  },
+  users: {
+    ad_soyad: "full_name",
+    email: "email",
+    rol: "role",
+    sifre: "password",
+    şifre: "password",
+    "ad soyad": "full_name",
+  },
+  "school-assignments": {
+    okul_adi: "school_name",
+    kullanici_email: "user_email",
+    "okul adı": "school_name",
+    "kullanıcı e-postası": "user_email",
+    kullanici_eposta: "user_email",
   },
 };
 
@@ -156,7 +181,13 @@ export function ImportDialog({
         <DialogHeader>
           <DialogTitle>
             Excel ile İçe Aktar —{" "}
-            {type === "schools" ? "Okullar" : "Ürünler"}
+            {type === "schools"
+              ? "Okullar"
+              : type === "products"
+              ? "Ürünler"
+              : type === "users"
+              ? "Kullanıcılar"
+              : "Okul–Kullanıcı Atamaları"}
           </DialogTitle>
           <DialogDescription>
             Şablonu indirin, doldurun ve yükleyin.
@@ -169,7 +200,7 @@ export function ImportDialog({
             <a
               href={`/api/import/template/${type}`}
               download
-              className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+              className="inline-flex items-center gap-2 text-sm text-slate-700 hover:text-slate-800 font-medium"
             >
               <Download className="h-4 w-4" />
               Şablonu İndir

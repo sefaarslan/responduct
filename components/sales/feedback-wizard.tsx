@@ -329,7 +329,7 @@ export function FeedbackWizard({
           </div>
           <div className="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+              className="h-full bg-slate-700 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
