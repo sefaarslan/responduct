@@ -57,7 +57,7 @@ export function LoginForm() {
   return (
     <div className="w-full space-y-6">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Tekrar hoş geldiniz</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Tekrar hoş geldiniz</h1>
         <p className="text-sm text-muted-foreground">
           Hesabınıza giriş yapın
         </p>

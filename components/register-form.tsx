@@ -76,7 +76,7 @@ export function RegisterForm() {
     <div className="w-full space-y-6">
       {/* Başlık */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
           Hesap oluşturun
         </h1>
         <p className="text-sm text-muted-foreground">
