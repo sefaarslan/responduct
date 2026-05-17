@@ -53,7 +53,7 @@ export function ForgotPasswordForm() {
     return (
       <div className="w-full space-y-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">E-postanızı kontrol edin</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">E-postanızı kontrol edin</h1>
           <p className="text-sm text-muted-foreground">
             Şifre sıfırlama bağlantısı gönderildi. Spam klasörünü de kontrol etmeyi unutmayın.
           </p>
@@ -71,7 +71,7 @@ export function ForgotPasswordForm() {
   return (
     <div className="w-full space-y-6">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Şifremi unuttum</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Şifremi unuttum</h1>
         <p className="text-sm text-muted-foreground">
           E-postanızı girin, sıfırlama bağlantısı gönderelim.
         </p>
