@@ -51,12 +51,6 @@ const steps = [
   },
 ];
 
-const stats = [
-  { value: "500", label: "Aktif Okul" },
-  { value: "12K+", label: "Geri Bildirim" },
-  { value: "%98", label: "Memnuniyet" },
-];
-
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -123,20 +117,6 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
-              {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-xl border border-white/20 bg-white/10 px-4 py-4"
-                >
-                  <p className="text-2xl font-bold text-white tracking-tight">
-                    {stat.value}
-                  </p>
-                  <p className="text-xs text-slate-300/70 mt-0.5">{stat.label}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </section>
 
