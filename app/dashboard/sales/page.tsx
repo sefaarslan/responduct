@@ -8,10 +8,11 @@ export default async function SalesDashboardPage() {
   const supabase = await createClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) redirect("/auth/login");
+  if (!session) redirect("/auth/login");
+  const user = session.user;
 
   const { data: assignments } = await supabase
     .from("school_assignments")

@@ -8,22 +8,14 @@ export default async function FeedbacksPage() {
   const supabase = await createClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) redirect("/auth/login");
 
   const { data: feedbacks } = await supabase
     .from("feedbacks")
-    .select(
-      `id, visit_date, status, created_at,
-       schools(school_name, city, district),
-       products(product_name),
-       feedback_answers(
-         id, answer_text, is_skipped,
-         questions(question_text, order_index)
-       )`
-    )
-    .eq("user_id", user.id)
+    .select("id, visit_date, status, created_at, schools(school_name, city, district), products(product_name)")
+    .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
   return (

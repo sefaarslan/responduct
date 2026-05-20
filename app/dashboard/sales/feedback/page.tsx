@@ -28,9 +28,10 @@ export default async function FeedbackPage() {
   const supabase = await createClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) redirect("/auth/login");
+  const user = session.user;
 
   // 0. Aylık limit kontrolü
   const thisMonthStart = new Date(

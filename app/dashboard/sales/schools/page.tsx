@@ -9,9 +9,10 @@ export default async function SalesSchoolsPage() {
   const supabase = await createClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) redirect("/auth/login");
+  const user = session.user;
 
   // Atanmış okullar
   const { data: assignments } = await supabase

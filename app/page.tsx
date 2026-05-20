@@ -52,7 +52,7 @@ const steps = [
 ];
 
 const stats = [
-  { value: "500+", label: "Aktif Okul" },
+  { value: "500", label: "Aktif Okul" },
   { value: "12K+", label: "Geri Bildirim" },
   { value: "%98", label: "Memnuniyet" },
 ];

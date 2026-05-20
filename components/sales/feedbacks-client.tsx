@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Clock, ChevronRight, X, ClipboardList } from "lucide-react";
+import { CheckCircle2, Clock, ChevronRight, ClipboardList, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -10,31 +10,26 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { createClient } from "@/lib/supabase/client";
 
-interface Question {
-  question_text: string;
-  order_index: number;
-}
-
-interface Answer {
-  id: string;
-  answer_text: string | null;
-  is_skipped: boolean;
-  questions: Question | null;
-}
-
-interface Feedback {
+interface FeedbackListItem {
   id: string;
   visit_date: string | null;
   status: string;
   created_at: string;
   schools: { school_name: string; city: string | null; district: string | null } | null;
   products: { product_name: string } | null;
-  feedback_answers: Answer[];
+}
+
+interface Answer {
+  id: string;
+  answer_text: string | null;
+  is_skipped: boolean;
+  questions: { question_text: string; order_index: number } | null;
 }
 
 interface FeedbacksClientProps {
-  feedbacks: Feedback[];
+  feedbacks: FeedbackListItem[];
 }
 
 function formatDate(dateStr: string | null) {
@@ -47,7 +42,30 @@ function formatDate(dateStr: string | null) {
 }
 
 export function FeedbacksClient({ feedbacks }: FeedbacksClientProps) {
-  const [detail, setDetail] = useState<Feedback | null>(null);
+  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackListItem | null>(null);
+  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [loadingDetail, setLoadingDetail] = useState(false);
+
+  const openDetail = async (fb: FeedbackListItem) => {
+    setSelectedFeedback(fb);
+    setAnswers([]);
+    setLoadingDetail(true);
+
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("feedback_answers")
+      .select("id, answer_text, is_skipped, questions(question_text, order_index)")
+      .eq("feedback_id", fb.id)
+      .order("questions(order_index)", { ascending: true });
+
+    setAnswers((data as Answer[]) ?? []);
+    setLoadingDetail(false);
+  };
+
+  const closeDetail = () => {
+    setSelectedFeedback(null);
+    setAnswers([]);
+  };
 
   if (feedbacks.length === 0) {
     return (
@@ -63,23 +81,16 @@ export function FeedbacksClient({ feedbacks }: FeedbacksClientProps) {
     );
   }
 
-  // Detay dialogu için yanıtları sırala
-  const sortedAnswers = (fb: Feedback) =>
-    [...fb.feedback_answers].sort(
-      (a, b) => (a.questions?.order_index ?? 0) - (b.questions?.order_index ?? 0)
-    );
-
   return (
     <>
       <div className="bg-white rounded-xl border border-zinc-200 divide-y divide-zinc-100">
         {feedbacks.map((fb) => (
           <button
             key={fb.id}
-            onClick={() => setDetail(fb)}
+            onClick={() => openDetail(fb)}
             className="w-full flex items-center justify-between px-5 py-4 hover:bg-zinc-50 transition-colors text-left"
           >
             <div className="flex items-start gap-4 min-w-0">
-              {/* Durum ikonu */}
               <div className="mt-0.5 shrink-0">
                 {fb.status === "completed" ? (
                   <CheckCircle2 className="h-4 w-4 text-emerald-500" />
@@ -87,8 +98,6 @@ export function FeedbacksClient({ feedbacks }: FeedbacksClientProps) {
                   <Clock className="h-4 w-4 text-amber-500" />
                 )}
               </div>
-
-              {/* Bilgiler */}
               <div className="min-w-0">
                 <p className="text-sm font-medium text-zinc-900 truncate">
                   {fb.schools?.school_name ?? "—"}
@@ -108,7 +117,6 @@ export function FeedbacksClient({ feedbacks }: FeedbacksClientProps) {
                 </div>
               </div>
             </div>
-
             <div className="flex items-center gap-3 shrink-0 ml-4">
               <Badge
                 className={
@@ -125,27 +133,29 @@ export function FeedbacksClient({ feedbacks }: FeedbacksClientProps) {
         ))}
       </div>
 
-      {/* Detay diyalogu */}
-      <Dialog open={!!detail} onOpenChange={(open) => !open && setDetail(null)}>
+      <Dialog open={!!selectedFeedback} onOpenChange={(open) => !open && closeDetail()}>
         <DialogContent className="sm:max-w-lg max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle className="truncate">
-              {detail?.schools?.school_name ?? "Feedback Detayı"}
+              {selectedFeedback?.schools?.school_name ?? "Feedback Detayı"}
             </DialogTitle>
             <DialogDescription>
-              {detail?.products?.product_name}
-              {detail?.visit_date && ` · ${formatDate(detail.visit_date)}`}
+              {selectedFeedback?.products?.product_name}
+              {selectedFeedback?.visit_date && ` · ${formatDate(selectedFeedback.visit_date)}`}
             </DialogDescription>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto space-y-1 pr-1">
-            {detail && sortedAnswers(detail).length === 0 && (
+            {loadingDetail ? (
+              <div className="flex items-center justify-center py-10">
+                <Loader2 className="h-5 w-5 animate-spin text-zinc-400" />
+              </div>
+            ) : answers.length === 0 ? (
               <p className="text-sm text-zinc-400 py-4 text-center">
                 Bu feedback için yanıt kaydedilmemiş.
               </p>
-            )}
-            {detail &&
-              sortedAnswers(detail).map((answer, i) => (
+            ) : (
+              answers.map((answer, i) => (
                 <div
                   key={answer.id}
                   className="rounded-lg border border-zinc-100 bg-zinc-50 px-4 py-3 space-y-1"
@@ -166,7 +176,8 @@ export function FeedbacksClient({ feedbacks }: FeedbacksClientProps) {
                     <p className="text-sm text-zinc-400 italic">Yanıtlanmadı</p>
                   )}
                 </div>
-              ))}
+              ))
+            )}
           </div>
         </DialogContent>
       </Dialog>

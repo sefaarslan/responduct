@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, UserX, Users, FileSpreadsheet } from "lucide-react";
+import { Plus, UserX, Users, FileSpreadsheet, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { UserForm, type UserFormValues } from "./user-form";
 import { ImportDialog } from "./import-dialog";
+import { ChangePasswordDialog } from "./change-password-dialog";
 
 interface User {
   id: string;
@@ -45,6 +46,7 @@ export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
   const [formOpen, setFormOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [deactivateId, setDeactivateId] = useState<string | null>(null);
+  const [passwordUser, setPasswordUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = () => router.refresh();
@@ -181,17 +183,30 @@ export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {!isMe && user.is_active && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-zinc-400 hover:text-red-600"
-                          onClick={() => setDeactivateId(user.id)}
-                          title="Deaktive et"
-                        >
-                          <UserX className="h-3.5 w-3.5" />
-                        </Button>
-                      )}
+                      <div className="flex items-center justify-end gap-1">
+                        {user.role === "sales" && user.is_active && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-zinc-400 hover:text-slate-700"
+                            onClick={() => setPasswordUser(user)}
+                            title="Şifre değiştir"
+                          >
+                            <KeyRound className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                        {!isMe && user.is_active && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-zinc-400 hover:text-red-600"
+                            onClick={() => setDeactivateId(user.id)}
+                            title="Deaktive et"
+                          >
+                            <UserX className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -206,6 +221,15 @@ export function UsersClient({ initialUsers, currentUserId }: UsersClientProps) {
         onOpenChange={setFormOpen}
         onSubmit={handleCreate}
       />
+
+      {passwordUser && (
+        <ChangePasswordDialog
+          open={!!passwordUser}
+          onOpenChange={(open) => !open && setPasswordUser(null)}
+          userId={passwordUser.id}
+          userName={passwordUser.full_name}
+        />
+      )}
 
       <ImportDialog
         open={importOpen}

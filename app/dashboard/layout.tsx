@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
+import { MobileHeader } from "@/components/dashboard/mobile-header";
 
 export default async function DashboardLayout({
   children,
@@ -30,20 +31,7 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen bg-zinc-50">
       <Sidebar role={profile.role as "admin" | "sales"} fullName={profile.full_name} />
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobil header */}
-        <header className="md:hidden h-14 flex items-center justify-between px-4 bg-white border-b border-zinc-200">
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-slate-700 flex items-center justify-center">
-              <span className="text-white font-bold text-sm select-none">R</span>
-            </div>
-            <span className="font-semibold text-sm tracking-tight text-zinc-900">
-              Responduct
-            </span>
-          </div>
-          <span className="text-xs bg-zinc-100 text-zinc-600 px-2 py-1 rounded-md">
-            {profile.role === "admin" ? "Yönetici" : "Satış"}
-          </span>
-        </header>
+        <MobileHeader role={profile.role as "admin" | "sales"} />
 
         <main className="flex-1 p-6 md:p-8 pb-24 md:pb-8">
           <div className="max-w-5xl">{children}</div>

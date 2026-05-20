@@ -6,7 +6,7 @@ export default async function UsersPage() {
   await connection();
   const supabase = await createClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
 
   const { data: users } = await supabase
     .from("users")
@@ -16,7 +16,7 @@ export default async function UsersPage() {
   return (
     <UsersClient
       initialUsers={users ?? []}
-      currentUserId={user?.id ?? ""}
+      currentUserId={session?.user.id ?? ""}
     />
   );
 }

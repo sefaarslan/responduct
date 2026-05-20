@@ -47,7 +47,7 @@ export default function ContactPage() {
                   Genel sorularınız ve demo talepleriniz için
                 </p>
                 <p className="text-sm font-medium text-slate-700 mt-2">
-                  hello@responduct.com
+                  sefadoc@gmail.com
                 </p>
               </div>
 
@@ -60,7 +60,7 @@ export default function ContactPage() {
                   Teknik sorunlar ve hesap yönetimi için
                 </p>
                 <p className="text-sm font-medium text-slate-700 mt-2">
-                  destek@responduct.com
+                  sefadoc@gmail.com
                 </p>
               </div>
 
