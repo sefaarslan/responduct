@@ -67,7 +67,7 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Sayfa başlığı */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
             Genel Bakış

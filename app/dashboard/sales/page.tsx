@@ -31,7 +31,7 @@ export default async function SalesDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Sayfa başlığı */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
             Genel Bakış

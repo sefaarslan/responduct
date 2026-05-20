@@ -176,7 +176,7 @@ export function AssignmentsClient({
 
   return (
     <>
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
             Atamalar

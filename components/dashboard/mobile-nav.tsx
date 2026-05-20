@@ -6,8 +6,7 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Building2,
-  Package,
-  Users,
+  Link2,
   BarChart3,
   PlusCircle,
   ClipboardList,
@@ -17,7 +16,7 @@ import {
 const adminNav = [
   { href: "/dashboard/admin", label: "Genel", icon: LayoutDashboard, exact: true },
   { href: "/dashboard/admin/schools", label: "Okullar", icon: Building2, exact: false },
-  { href: "/dashboard/admin/users", label: "Kullanıcılar", icon: Users, exact: false },
+  { href: "/dashboard/admin/assignments", label: "Atamalar", icon: Link2, exact: false },
   { href: "/dashboard/admin/reports", label: "Raporlar", icon: BarChart3, exact: false },
 ];
 
