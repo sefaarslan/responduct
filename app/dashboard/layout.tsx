@@ -25,7 +25,7 @@ export default async function DashboardLayout({
     .eq("id", user.id)
     .single();
 
-  if (!profile) redirect("/auth/login");
+  if (!profile) redirect("/api/auth/signout");
 
   return (
     <div className="flex min-h-screen bg-zinc-50">
